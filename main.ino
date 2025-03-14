@@ -43,8 +43,8 @@ Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(ADXL345_ID_NUMBER); //
 float magReadings[WINDOW_SIZE]; // for use to find min, max threshold values 
 int count = 0; // # of filled slots in array
 int index = 0; // index to replace old values (for sliding door)
-bool isStable;
-bool isOptimalTemp;
+bool isStable = false;
+bool isOptimalTemp = false;
 
 // initialize servo
 Servo injectionDevice;
@@ -81,39 +81,50 @@ void setup() {
 }
 
 void loop() {
-	// 1. test for optimal temperature
-	float tempC = measureTemperature();
-	bool optimalTemp = isOptimal(tempC);
-	if (optimalTemp) { lastCheck = millis(); } // start timer if medication reaches optimal temperature
+	while (!optimalTemp) {
+		// 1. test for optimal temperature
+		float tempC = measureTemperature();
+		bool isOptimalTemp = isOptimal(tempC);
+		if (isOptimalTemp) { lastCheck = millis(); } // start timer if medication reaches optimal temperature
+	}
 
 	// 2. test for stability
 	// initilize accelerometer
-	sensors_event_t event;
-	float magnitudeOne = calculateMagnitude(event); // magnitude of acceleration
-	// initiate sliding door algorithm to gather all threshold readings
-	slidingDoorAlgorithm(count, index, magReadings);
-	
-	// add threshold values into array until array is full 
-	if (count >= WINDOW_SIZE) { 
-		float minMag = magReadings[0];
-		float maxMag = magReadings[0];
+	while (!isStable) {
+		sensors_event_t event;
+		float magnitudeOne = calculateMagnitude(event); // magnitude of acceleration
+		// initiate sliding door algorithm to gather all threshold readings
+		slidingDoorAlgorithm(count, index, magReadings);
 		
-		// find the min/max values of the thresholdReadings array
-		for (int i = 1; i < WINDOW_SIZE; i++) {
-			if (magReadings[i] < minMag) { minMag = magReadings[i]; }
-      		if (magReadings[i] > maxMag) { maxMag = magReadings[i]; }
-    	}
+		// add threshold values into array until array is full 
+		if (count >= WINDOW_SIZE) { 
+			float minMag = magReadings[0];
+			float maxMag = magReadings[0];
+			
+			// find the min/max values of the thresholdReadings array
+			for (int i = 1; i < WINDOW_SIZE; i++) {
+				if (magReadings[i] < minMag) { minMag = magReadings[i]; }
+				if (magReadings[i] > maxMag) { maxMag = magReadings[i]; }
+			}
+		}
+		
+		isStable = isStable(minMag, maxMag);
 	}
-	
+
 	// checks if the temp is optimal & the device is stable within the grace period of GRACE_PERIOD ms (3000 for now)
-	bool isStable = isStable(minMag, maxMag);
-	if (optimalTemp && isStable && (millis() - lastCheck >= GRACE_PERIOD)) { 
+	if (isOptimalTemp && isStable && (millis() - lastCheck >= GRACE_PERIOD)) { 
 		beepReady();
 		displayLCD("Ready for injection!", lcd, 1000); // set up JSON in the future to store messages 
 		conditionsMet = true;
-	}
+	} else { 
+		condtionsMet = false; // reset conditionsMet if conditions not met
+		if (!(millis() - lastCheck >= GRACE_PERIOD)) { // reset both variables if grace period passed to start the clock again
+			isOptimalTemp = false;
+			isStable = false;
+		}
+	} 
 
-	delay(100);
+	delay(50);
 
 	// inject medicine once the both conditions are met AND button is pressed
 	if (condtionsMet && digitalRead(BUTTON_PIN) == HIGH) { // set up debounce for button later
