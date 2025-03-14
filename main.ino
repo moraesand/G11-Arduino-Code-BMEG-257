@@ -7,14 +7,24 @@
 	Made by Samuel An for BMEG 257 Group 11
 */
 
+// libraries for ADXL345
 #include <Wire.h> // include library in the future
 #include <math.h> 
 #include <Adafruit_Sensor.h> // include library in future
 #include <Adafruit_ADXL345_U.h> // include library in future
 
+// library for servo motor
+#include <Servo.h>
+
+// libraries for LCD screen
+#include <string.h>
+#include <LiquidCrystal_I2C.h>
+
 // include helper functions
 #include "ThermistorFunctions.h"
 #include "AccelerometerFunctions.h"
+#include "LCDFunctions.h"
+#include "ServoFunctions.h"
 
 // 10 set as arbituary number, adjust if neccessary
 #define WINDOW_SIZE 10 
@@ -25,6 +35,9 @@
 // max allocated time to find if both conditions to be satisfied (temperature & stability)
 #define GRACE_PERIOD 1000
 
+#define SERVO_PIN 10 // arbituary, to be set up later
+#define BUTTON_PIN 5 // arbituary, to be set up later
+
 // initialize ADXL345 device to codebase
 Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(ADXL345_ID_NUMBER); // 25711 is a unique id
 float magReadings[WINDOW_SIZE]; // for use to find min, max threshold values 
@@ -33,13 +46,38 @@ int index = 0; // index to replace old values (for sliding door)
 bool isStable;
 bool isOptimalTemp;
 
+// initialize servo
+Servo injectionDevice;
+
+// initialize LCD screen
+LiquidCrystal_I2C lcd(0x27, 16, 2); // 0x27 is the most common i2c address, also try 0x3F
+
+// boolean for if both conditions (temperature & stability) are met
+bool condtionsMet = false;
+
 void setup() {
-	lcd.begin(16, 2);
+	// init serial monitor (for future debugging)
+	Serial.begin(9600);
+
+	// init LCD screen
+	lcd.init();
+	lcd.backlight();
+
+	// init accelerometer
 	// checker for if the accelerometer is broken
 	if(!accel.begin()) {
-		Serial.println("Error in ADXL345 Accelerometer #25711!");
+		displayLCD("Error in ADXL345 Accelerometer #25711!", lcd, 2000);
     	while(1);
 	}
+
+	// init servo motor
+	injectionDevice.attach(SERVO_PIN);
+
+	// init button
+	pinMode(BUTTON_PIN, INPUT_PULLUP);
+
+	// msg to signal that device powered on once everything is initalized
+	displayLCD("Device is ready for use!", lcd, 1000); 
 }
 
 void loop() {
@@ -70,13 +108,25 @@ void loop() {
 	// checks if the temp is optimal & the device is stable within the grace period of GRACE_PERIOD ms (3000 for now)
 	bool isStable = isStable(minMag, maxMag);
 	if (optimalTemp && isStable && (millis() - lastCheck >= GRACE_PERIOD)) { 
-		// add something to indicate that it works, maybe green LED flashing and LCD
-		// for now, beep
 		beepReady();
+		displayLCD("Ready for injection!", lcd, 1000); // set up JSON in the future to store messages 
+		conditionsMet = true;
 	}
 
 	delay(100);
+
+	// inject medicine once the both conditions are met AND button is pressed
+	if (condtionsMet && digitalRead(BUTTON_PIN) == HIGH) { // set up debounce for button later
+		displayLCD("Injecting...", lcd, 100000);
+		moveServo(injectionDevice, 1000); // how long it should move is TBD later in testing (currently 1000ms)
+		delay(10000); // wait for a long time before retracting into initial state
+		retractServo(injectionDevice, 1000);
+		delay(1000);
+
+		lcd.clear();
+		displayLCD("Injection is Complete!", lcd, 1000);
+	}
 }
 
-// adapted from Monitor Temerature
+// BuzzerFunctions, only one so it is in main
 void beepReady() { tone(buzzer, 1000, 500); } // beep at 1000 Hz for 500 ms

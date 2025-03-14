@@ -33,9 +33,5 @@ float steinhartK(float R2, float C1, float C2, float C3) {
 }
 
 bool isOptimalRange(float temp) {
-    if (temp > 20.0 && temp < 22.0) {
-        // green LED turns on(?) and LCD screen display(?)
-    } else { 
-        // red LED turns on(?) and LCD screen display(?) error(?)
-    }
+    return temp > 20.0 && temp < 22.0;
 }
