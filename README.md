@@ -20,3 +20,10 @@ void displayLCD(string message, LiquidCrystal_I2C &lcd, int duration); - display
 
 # BuzzerFunctions (located in main.ino)
 void beepReady(); - beeps at 1000 Hz for 500 ms
+
+# Future Updates
+For the future, we will be adding:
+
+JSON Support - store all error, success, etc., messages into one JSON that the code can use
+Further delay() implmentation - changes to delay() will come in once we start testing the device
+Correct pin # and constants - once we start testing, we will be able to come up with the corrent #define constants

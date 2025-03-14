@@ -1,10 +1,12 @@
 /* 
-	Code for Acceleromter
-	Terms:
-		Threshold: refers to the max reading of the acceleration 
-		(in x, y, z coordinates) minus the min (max - min)
-		
-	Made by Samuel An for BMEG 257 Group 11
+Code For Group 11 Medical Adherence Device 
+v.0.0.1
+
+Terms:
+Threshold: refers to the max reading of the acceleration 
+(in x, y, z coordinates) minus the min (max - min)
+
+Made by Samuel An for BMEG 257 Group 11
 */
 
 // libraries for ADXL345
