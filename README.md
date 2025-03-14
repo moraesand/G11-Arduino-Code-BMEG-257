@@ -1,8 +1,6 @@
 # G11-Arduino-Code-BMEG-257
 This codebase is intended for Group 11's newest medical adherence product for BMEG 257. 
 
-# Key Helper Functions
-
 # AccelerometerFunctions
 float calculateMagnitude(sensors_event_t event); - calculates magnitude of an acceleration vector
 void slidingDoorAlgorithm(); - internal use; used to filter out old acceleration readings and put in new ones
