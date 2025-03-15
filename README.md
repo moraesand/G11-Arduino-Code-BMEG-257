@@ -33,6 +33,6 @@ Further delay() implmentation - changes to delay() will come in once we start te
 Correct pin # and constants - once we start testing, we will be able to come up with the corrent #define constants<br>
 
 # Iterated Function Structure
-![image](https://github.com/user-attachments/assets/3ff93c06-8797-4936-b0d2-fbc4f52b9cb4)<br>
+![image](https://github.com/user-attachments/assets/3b4be643-ca40-4e33-9790-d470cfb88593)
 This is the IFS that we used to format and guide our code. 
 
