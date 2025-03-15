@@ -27,6 +27,7 @@ Made by Samuel An for BMEG 257 Group 11
 #include "AccelerometerFunctions.h"
 #include "LCDFunctions.h"
 #include "ServoFunctions.h"
+#include "LEDFunctions.h"
 
 // 10 set as arbituary number, adjust if neccessary
 #define WINDOW_SIZE 10 
@@ -116,6 +117,7 @@ void loop() {
 	// checks if the temp is optimal & the device is stable within the grace period of GRACE_PERIOD ms (3000 for now)
 	if (isOptimalTemp && isStable && (millis() - lastCheck >= GRACE_PERIOD)) { 
 		beepReady();
+		flashLED(LED_PIN, 1000, 10); // flash LED 10 times for 5s intervals, change duration & # of times accordingly
 		displayLCD("Ready for injection!", lcd, 1000); // set up JSON in the future to store messages 
 		conditionsMet = true;
 	} else { 

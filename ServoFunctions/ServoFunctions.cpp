@@ -4,7 +4,7 @@
 #include <math.h> 
 #include <Servo.h>
 
-#define SERVO_PIN 10 // arbituary, to be set up later
+#define SERVO_PIN 11 // arbituary, to be set up later
 #define FULL_BACKWARD_SPEED 0 
 #define FULL_FOWARD_SPEED 180
 #define STOP 90
