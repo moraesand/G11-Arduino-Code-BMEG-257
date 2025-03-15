@@ -151,6 +151,8 @@ void loop() {
 	// if button is pressed but conditions are not met
 	if (!conditionsMet && digitalRead(BUTTON_PIN) == HIGH) {
 		beepReady();
+		beepReady();
+		beepReady();
 		flashLED(RED_PIN, 1000, 10);
 		lcd.clear();
 		displayLCD("ERROR: Injection could not be completed!", lcd, 100000);
