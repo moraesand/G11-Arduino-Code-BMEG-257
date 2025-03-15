@@ -6,10 +6,10 @@
 // thermistor pin location
 #define THERMISTOR_PIN A0  // analog pin connected to the thermistor (change if needed)
 
-// Steinhart-Hart coefficients (from thermistor datasheet) (change if needed)
-#define C1 1.009249522e-03
-#define C2 2.378405444e-04
-#define C3 2.019202697e-07
+// Steinhart-Hart coefficients (from thermistor datasheet)
+#define C1 1.125373679e-03
+#define C2 2.345224627e-04
+#define C3 0.8781465934e-07
 
 // thermistor resistance at 25C (change if needed)
 #define SERIES_RESISTOR 10000.0 // 10kΩ fixed resistor
