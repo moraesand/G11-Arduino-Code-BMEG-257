@@ -38,9 +38,11 @@ Made by Samuel An for BMEG 257 Group 11
 // max allocated time to find if both conditions to be satisfied (temperature & stability)
 #define GRACE_PERIOD 1000
 
-#define SERVO_PIN 10 // arbituary, to be set up later
-#define BUTTON_PIN 5 // arbituary, to be set up later
-#define LED_PIN 3 // arbituary, to be set up later
+// arbituary, to be set up later
+#define SERVO_PIN 10
+#define BUTTON_PIN 5 
+#define GREEN_PIN 3 
+#define RED_PIN 4
 
 // initialize ADXL345 device to codebase
 Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(ADXL345_ID_NUMBER); // 25711 is a unique id
@@ -118,10 +120,11 @@ void loop() {
 	// checks if the temp is optimal & the device is stable within the grace period of GRACE_PERIOD ms (3000 for now)
 	if (isOptimalTemp && isStable && (millis() - lastCheck >= GRACE_PERIOD)) { 
 		beepReady();
-		flashLED(LED_PIN, 1000, 10); // flash LED 10 times for 5s intervals, change duration & # of times accordingly
+		flashLED(GREEN_PIN, 1000, 10); // flash LED 10 times for 5s intervals, change duration & # of times accordingly
 		displayLCD("Ready for injection!", lcd, 1000); // set up JSON in the future to store messages 
 		conditionsMet = true;
 	} else { 
+		lightLED(RED_PIN, 10000);
 		condtionsMet = false; // reset conditionsMet if conditions not met
 		if (!(millis() - lastCheck >= GRACE_PERIOD)) { // reset both variables if grace period passed to start the clock again
 			isOptimalTemp = false;
@@ -142,8 +145,16 @@ void loop() {
 
 		lcd.clear();
 		beepReady();
-		flashLED(LED_PIN, 1000, 10);
+		flashLED(GREEN_PIN, 1000, 10);
 		displayLCD("Injection is Complete!", lcd, 1000);
+	}
+
+	// if button is pressed but conditions are not met
+	if (!conditionsMet == digitalRead(BUTTON_PIN) == HIGH) {
+		beepReady();
+		flashLED(RED_PIN, 1000, 10);
+		lcd.clear();
+		displayLCD("ERROR: Injection could not be completed!", lcd, 100000);
 	}
 }
 
