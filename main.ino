@@ -149,7 +149,7 @@ void loop() {
 	}
 
 	// if button is pressed but conditions are not met
-	if (!conditionsMet == digitalRead(BUTTON_PIN) == HIGH) {
+	if (!conditionsMet && digitalRead(BUTTON_PIN) == HIGH) {
 		beepReady();
 		flashLED(RED_PIN, 1000, 10);
 		lcd.clear();
