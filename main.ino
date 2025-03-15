@@ -40,6 +40,7 @@ Made by Samuel An for BMEG 257 Group 11
 
 #define SERVO_PIN 10 // arbituary, to be set up later
 #define BUTTON_PIN 5 // arbituary, to be set up later
+#define LED_PIN 3 // arbituary, to be set up later
 
 // initialize ADXL345 device to codebase
 Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(ADXL345_ID_NUMBER); // 25711 is a unique id
@@ -131,6 +132,7 @@ void loop() {
 	delay(50);
 
 	// inject medicine once the both conditions are met AND button is pressed
+	// will have to implement debounce for button press in another update
 	if (condtionsMet && digitalRead(BUTTON_PIN) == HIGH) { // set up debounce for button later
 		displayLCD("Injecting...", lcd, 100000);
 		moveServo(injectionDevice, 1000); // how long it should move is TBD later in testing (currently 1000ms)
@@ -139,6 +141,8 @@ void loop() {
 		delay(1000);
 
 		lcd.clear();
+		beepReady();
+		flashLED(LED_PIN, 1000, 10);
 		displayLCD("Injection is Complete!", lcd, 1000);
 	}
 }
