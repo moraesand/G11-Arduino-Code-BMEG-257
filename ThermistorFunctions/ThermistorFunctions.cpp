@@ -16,7 +16,7 @@
 
 float measureTemperature() {
     float Vo = analogRead(THERMISTOR_PIN);
-    float R2 = SERIES_RESISTOR * (1023.0 / Vo - 1.0);
+    float R2 = SERIES_RESISTOR * (1024.0 / Vo);
 
     float tempK = steinhartK(R2, C1, C2, C3);
 
