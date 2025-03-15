@@ -31,6 +31,7 @@ For the future, we will be adding:
 JSON Support - store all error, success, etc., messages into one JSON that the code can use<br>
 Further delay() implmentation - changes to delay() will come in once we start testing the device<br>
 Correct pin # and constants - once we start testing, we will be able to come up with the corrent #define constants<br>
+LCD improvements - add sliding messages, along side error codes for proper formatting<br>
 
 # Iterated Function Structure
 ![image](https://github.com/user-attachments/assets/3b4be643-ca40-4e33-9790-d470cfb88593)

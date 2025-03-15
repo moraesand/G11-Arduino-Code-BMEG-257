@@ -124,7 +124,6 @@ void loop() {
 		displayLCD("Ready for injection!", lcd, 1000); // set up JSON in the future to store messages 
 		conditionsMet = true;
 	} else { 
-		lightLED(RED_PIN, 10000);
 		condtionsMet = false; // reset conditionsMet if conditions not met
 		if (!(millis() - lastCheck >= GRACE_PERIOD)) { // reset both variables if grace period passed to start the clock again
 			isOptimalTemp = false;
